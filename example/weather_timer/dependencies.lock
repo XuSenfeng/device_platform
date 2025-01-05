@@ -1,0 +1,78 @@
+dependencies:
+  chmorgan/esp-audio-player:
+    component_hash: c8ac1998e9af863bc41b57e592f88d1a5791a0f891485122336ddabbf7a65033
+    source:
+      type: service
+    version: 1.0.7
+  chmorgan/esp-file-iterator:
+    component_hash: 327091394b9ef5c2cd395a960ab70ae64479e0a8831cbd9925e38895fad93719
+    source:
+      type: service
+    version: 1.0.0
+  chmorgan/esp-libhelix-mp3:
+    component_hash: cbb76089dc2c5749f7b470e2e70aedc44c9da519e04eb9a67d4c7ec275229e53
+    source:
+      type: service
+    version: 1.0.3
+  espressif/esp-dsp:
+    component_hash: fa7fe74305df6da25867437ebcd4213e047cbfc0556cf92067ab657fce537c6e
+    source:
+      type: service
+    version: 1.5.2
+  espressif/esp-sr:
+    component_hash: 04b360c8eb79e02c204d9a2c3683f7bc20077752a01e51f636dd376db0ef1e82
+    source:
+      type: service
+    version: 1.6.1
+  espressif/esp32-camera:
+    component_hash: c3eb05fbeeae884a23bed9b17d48d5f0da8872beadae0c0e747d2fbea6094f06
+    source:
+      type: service
+    version: 2.0.15
+  espressif/esp_codec_dev:
+    component_hash: 9f492cd70c85381c41dc92da48dea93dd43fbfc51532dbf748dc7d94f9846c59
+    source:
+      type: service
+    version: 1.3.3
+  espressif/esp_lcd_touch:
+    component_hash: d4d8f2dc33205797169a97a02e0d89a8982f59fe0509129b54422052b8522f59
+    source:
+      storage_url: file:///E:/alearn/ESP-IDF-5_1_4/Espressif/registry
+      type: service
+    version: 1.1.1
+  espressif/esp_lcd_touch_ft5x06:
+    component_hash: 97759953d9436a365e9427078c5b04ecce4e6a50f50cf62c68cd6bfa229b812c
+    source:
+      storage_url: file:///E:/alearn/ESP-IDF-5_1_4/Espressif/registry
+      type: service
+    version: 1.0.6
+  espressif/esp_new_jpeg:
+    component_hash: 7c07831bbf11d15f84f42dc0e127094c78063b03d0dce688495773656f998d2b
+    source:
+      type: service
+    version: 0.5.1
+  espressif/zlib:
+    component_hash: d901723af51f13fc8e5824f39f32239c847956e8fd951a05266588dc5cfbb9ae
+    source:
+      type: service
+    version: 1.3.1
+  espressif__esp_lvgl_port:
+    component_hash: null
+    source:
+      path: E:\JHY\esp32\ESP-IDF\Computer-design-competition\src\ESP-IDF\speech_tts\components\espressif__esp_lvgl_port
+      type: local
+    version: 1.4.0
+  idf:
+    component_hash: null
+    source:
+      type: idf
+    version: 5.1.4
+  lvgl/lvgl:
+    component_hash: 948bff879a345149b83065535bbc4a026ce9f47498a22881e432a264b9098015
+    source:
+      storage_url: file:///E:/alearn/ESP-IDF-5_1_4/Espressif/registry
+      type: service
+    version: 8.3.11
+manifest_hash: 8d847bb341c9f0b4b5fa86f1079c0f5cb3bfcda500b2543b7b7eea6f6f5306b9
+target: esp32s3
+version: 1.0.0

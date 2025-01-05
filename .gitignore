@@ -1,0 +1,4 @@
+# git忽略以下文件
+example/weather_timer/build
+example/weather_timer/components
+example/weather_timer/managed_components
