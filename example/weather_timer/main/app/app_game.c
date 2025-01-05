@@ -58,9 +58,6 @@ void app_back_event_cb(lv_event_t *e)
     lv_obj_t *base = (lv_obj_t *)lv_event_get_user_data(e);
     text_context_windows = NULL;
     lvgl_port_lock(0);
-    // lv_obj_clean(base);
-    // lv_obj_add_style(base, &main_style, 0);
-    // lv_app_page(base, );
     extern lv_obj_t *main_tileview;
     extern int init_mode;
     if(init_mode)
@@ -305,8 +302,29 @@ void lv_constellation_page(lv_obj_t * base){
 }
 
 
-
-
+void game_Story_page_btn_cb(lv_obj_t *base){
+        get_http_data_story();
+        text_context_windows = create_text(base, story_next_page_btn_cb, story_pre_page_btn_cb, 0);
+}
+void game_Riddle_page_btn_cb(lv_obj_t *base){
+    text_context_windows = create_text(base, riddle_next_page_btn_cb, riddle_pre_page_btn_cb, 0);
+    get_http_data_riddle();
+}
+void game_Poisonous_chicken_soup_page_btn_cb(lv_obj_t *base){
+    text_context_windows = create_text(base, NULL, NULL, 0);
+    get_http_data_poisonous_chicken_soup();
+}
+void game_Camera_page_btn_cb(lv_obj_t *base){
+    canvsa = lv_canvas_create(base);
+    lv_obj_set_size(canvsa, 240, 176);
+    lv_obj_align(canvsa, LV_ALIGN_CENTER, 0, 0);
+    extern char *canvsa_buf;
+    if(!canvsa_buf){
+        canvsa_buf = malloc(240 *176 *2);
+    }
+    lv_canvas_set_buffer(canvsa, canvsa_buf, 240, 176, LV_IMG_CF_TRUE_COLOR);
+    if_camer_show = 1;
+}
 /// @brief app页面
 /// @param e 
 void app_btn_event_cb(lv_event_t * e){
@@ -332,32 +350,11 @@ void app_btn_event_cb(lv_event_t * e){
         // lv_obj_set_size(back,50,50);
 
         lv_obj_t *target=lv_event_get_target(e);
-        if(target==Story_Text){
-            get_http_data_story();
-            text_context_windows = create_text(base, story_next_page_btn_cb, story_pre_page_btn_cb, 0);
-        }else if(target == Riddle){
-            text_context_windows = create_text(base, riddle_next_page_btn_cb, riddle_pre_page_btn_cb, 0);
-            get_http_data_riddle();
-        }else if(target == Game){
-            game_main(base);
-        }else if(target == Poisonous_chicken_soup){
-            text_context_windows = create_text(base, NULL, NULL, 0);
-            get_http_data_poisonous_chicken_soup();
-        }else if(target == Constellation){
-            lv_constellation_page(base);
-        }else if(target == Birthday_character){
-            ESP_LOGI("app_btn_event_cb", "Birthday_character");
-            lv_birthday_page(base);
-        }else if(target == Photo){
-            canvsa = lv_canvas_create(base);
-            lv_obj_set_size(canvsa, 240, 176);
-            lv_obj_align(canvsa, LV_ALIGN_CENTER, 0, 0);
-            extern char *canvsa_buf;
-            if(!canvsa_buf){
-                canvsa_buf = malloc(240 *176 *2);
-            }
-            lv_canvas_set_buffer(canvsa, canvsa_buf, 240, 176, LV_IMG_CF_TRUE_COLOR);
-            if_camer_show = 1;
+        page_handle_cb_t handle = app_item_get_handler(target, set_item_handle);
+        if(handle != NULL){
+            handle(base);
+        }else{
+            ESP_LOGE(TAG, "find set item handler err");
         }
         extern lv_obj_t *main_tileview;
         extern int init_mode;
@@ -385,76 +382,63 @@ void lv_app_page(lv_obj_t *base, lv_obj_t *app_page){
     lv_list_add_text(Program,"Program");
     lv_obj_t *lable;
     if(init_mode){
-        Story_Text = lv_list_add_btn(Program, LV_SYMBOL_FILE, "");  /* 添加按钮 */
-        lable = lv_label_create(Story_Text);
+        set_item_add(
 #if USING_CHINESE
-        lv_obj_set_style_text_font(lable, &font_alipuhui20, 0);
-        lv_label_set_text(lable, "故事                                     ");
+        "故事                                    ", 
 #else
-        lv_label_set_text(lable, "Story                                     ");
+        "Story",
 #endif
-        lv_obj_align(lable, LV_ALIGN_CENTER, -30, 0);
-        lv_obj_add_event_cb(Story_Text,app_btn_event_cb,LV_EVENT_CLICKED,app_page);
-
-        Riddle = lv_list_add_btn(Program, LV_SYMBOL_SETTINGS, "");  /* 添加按钮 */
-        lable = lv_label_create(Riddle);
-#if USING_CHINESE
-        lv_obj_set_style_text_font(lable, &font_alipuhui20, 0);
-        lv_label_set_text(lable, "脑筋急转弯                          ");
-#else
-        lv_label_set_text(lable, "Riddle                                     ");
-#endif
-        lv_obj_align(lable, LV_ALIGN_CENTER, -30, 0);
-        lv_obj_add_event_cb(Riddle,app_btn_event_cb,LV_EVENT_CLICKED,app_page);
-
-        Poisonous_chicken_soup = lv_list_add_btn(Program, LV_SYMBOL_FILE, "");  /* 添加按钮 */
-        lable = lv_label_create(Poisonous_chicken_soup);
-#if USING_CHINESE
-        lv_obj_set_style_text_font(lable, &font_alipuhui20, 0);
-        lv_label_set_text(lable, "毒鸡汤                                    ");
-#else
-        lv_label_set_text(lable, "Poisonous chicken soup                                     ");
-#endif
-        lv_obj_align(lable, LV_ALIGN_CENTER, -30, 0);
-        lv_obj_add_event_cb(Poisonous_chicken_soup,app_btn_event_cb,LV_EVENT_CLICKED,app_page);
-
-        Constellation = lv_list_add_btn(Program, LV_SYMBOL_FILE, "");  /* 添加按钮 */
-        lable = lv_label_create(Constellation);
-#if USING_CHINESE
-        lv_obj_set_style_text_font(lable, &font_alipuhui20, 0);
-        lv_label_set_text(lable, "星座运势                             ");
-#else
-        lv_label_set_text(lable, "Constellation                                     ");
-#endif
-        lv_obj_align(lable, LV_ALIGN_CENTER, -30, 0);
-        lv_obj_add_event_cb(Constellation,app_btn_event_cb,LV_EVENT_CLICKED,app_page);
+        game_Story_page_btn_cb,Program,base, LV_SYMBOL_FILE, app_btn_event_cb, game_manage);
         
-        Birthday_character = lv_list_add_btn(Program, LV_SYMBOL_FILE, "Birthday");  /* 添加按钮 */
+        set_item_add(
+#if USING_CHINESE
+        "脑筋急转弯                          ", 
+#else
+        "Riddle",
+#endif
+        game_Riddle_page_btn_cb,Program,base, LV_SYMBOL_SETTINGS, app_btn_event_cb, game_manage);
+        
+        set_item_add(
+#if USING_CHINESE
+        "毒鸡汤                                    ", 
+#else
+        "Poisonous chicken soup",
+#endif
+        game_Poisonous_chicken_soup_page_btn_cb,Program,base, LV_SYMBOL_FILE, app_btn_event_cb, game_manage);
+        
+        
+        set_item_add(
+#if USING_CHINESE
+        "星座运势                             ", 
+#else
+        "Constellation",
+#endif
+        lv_constellation_page,Program,base, LV_SYMBOL_FILE, app_btn_event_cb, game_manage);
+        
+        set_item_add(
+#if USING_CHINESE
+        "生日                                    ", 
+#else
+        "Birthday",
+#endif
+        lv_birthday_page,Program,base, LV_SYMBOL_FILE, app_btn_event_cb, game_manage);
 
-        lv_obj_add_event_cb(Birthday_character,app_btn_event_cb,LV_EVENT_CLICKED,app_page);
     }else{
-        Photo = lv_list_add_btn(Program, LV_SYMBOL_PLAY, "");  /* 添加按钮 */
-        lable = lv_label_create(Photo);
+    set_item_add(
 #if USING_CHINESE
-        lv_obj_set_style_text_font(lable, &font_alipuhui20, 0);
-        lv_label_set_text(lable, "照相机                            ");
+        "照相机                              ", 
 #else
-        lv_label_set_text(lable, "Photo                            ");
+        "Camera",
 #endif
-        lv_obj_align(lable, LV_ALIGN_CENTER, -30, 0);
-        lv_obj_add_event_cb(Photo,app_btn_event_cb,LV_EVENT_CLICKED,app_page);
+        game_Camera_page_btn_cb,Program,base, LV_SYMBOL_PLAY, app_btn_event_cb, game_manage);
+
     }
-
-    Game = lv_list_add_btn(Program, LV_SYMBOL_PLAY, "");  /* 添加按钮 */
-    lable = lv_label_create(Game);
+    set_item_add(
 #if USING_CHINESE
-    lv_obj_set_style_text_font(lable, &font_alipuhui20, 0);
-    lv_label_set_text(lable, "2048游戏                            ");
+        "2048游戏                            ", 
 #else
-    lv_label_set_text(lable, "Game                            ");
+        "Game",
 #endif
-    lv_obj_align(lable, LV_ALIGN_CENTER, -30, 0);
-    lv_obj_add_event_cb(Game,app_btn_event_cb,LV_EVENT_CLICKED,app_page);
-
+        game_main,Program,base, LV_SYMBOL_PLAY, app_btn_event_cb, game_manage);
     ESP_LOGI("lv_app_page", "lv_app_page end");
 }

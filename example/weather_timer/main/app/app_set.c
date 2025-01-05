@@ -356,7 +356,7 @@ static void set_menu_btn_event_cb(lv_event_t *e);
 /// @param item_log 图标
 /// @return 是否成功
 esp_err_t set_item_add(char *name, page_handle_cb_t handle, lv_obj_t * setting, lv_obj_t *base, 
-                        char * item_log, void (*button_handle_cb)(lv_event_t * )){
+                        char * item_log, void (*button_handle_cb)(lv_event_t * ), set_item_t *set_item_manage){
 #if USING_CHINESE
     LV_FONT_DECLARE(font_alipuhui20);
 #endif
@@ -367,8 +367,8 @@ esp_err_t set_item_add(char *name, page_handle_cb_t handle, lv_obj_t * setting, 
     }
     now->page_handle_cb = handle;
     now->item_log = item_log;
-    now->next = set_item_handle;
-    set_item_handle = now;
+    now->next = set_item_manage;
+    set_item_manage = now;
 #if USING_CHINESE
     now->name_ch = name;
 #else 
@@ -390,8 +390,8 @@ esp_err_t set_item_add(char *name, page_handle_cb_t handle, lv_obj_t * setting, 
 /// @brief 获取某一个item的处理函数
 /// @param obj 
 /// @return 
-page_handle_cb_t app_item_get_handler(lv_obj_t *obj){
-    set_item_t *now = set_item_handle;
+page_handle_cb_t app_item_get_handler(lv_obj_t *obj, set_item_t *set_item_manage){
+    set_item_t *now = set_item_manage;
     while(now != 0){
         if(now->btn == obj){
             return now->page_handle_cb;
@@ -401,8 +401,8 @@ page_handle_cb_t app_item_get_handler(lv_obj_t *obj){
     return NULL;
 }
 /// @brief  释放
-void app_item_free(){
-    set_item_t *now = set_item_handle;
+void app_item_free(set_item_t *set_item_manage){
+    set_item_t *now = set_item_manage;
     while(now != 0){
         set_item_t *temp = now;
         now = now->next;
@@ -544,7 +544,7 @@ static void set_menu_btn_event_cb(lv_event_t *e)
     // lv_obj_set_size(back,50,50);
 
     lv_obj_t *target=lv_event_get_target(e);
-    page_handle_cb_t handle = app_item_get_handler(target);
+    page_handle_cb_t handle = app_item_get_handler(target, set_item_handle);
     if(handle != NULL){
         handle(base);
     }else{
@@ -575,7 +575,7 @@ void lv_set_page(lv_obj_t *base)
 #else
         "Brightness",
 #endif
-        set_Bright_page_btn_cb,setting,base, LV_SYMBOL_SETTINGS, set_menu_btn_event_cb);
+        set_Bright_page_btn_cb,setting,base, LV_SYMBOL_SETTINGS, set_menu_btn_event_cb, set_item_handle);
 
     set_item_add(
 #if USING_CHINESE
@@ -583,7 +583,7 @@ void lv_set_page(lv_obj_t *base)
 #else
         "Sound",
 #endif
-        set_Sound_page_btn_cb,setting,base, LV_SYMBOL_AUDIO, set_menu_btn_event_cb);
+        set_Sound_page_btn_cb,setting,base, LV_SYMBOL_AUDIO, set_menu_btn_event_cb, set_item_handle);
 
     set_item_add(
 #if USING_CHINESE
@@ -591,7 +591,7 @@ void lv_set_page(lv_obj_t *base)
 #else
         "Lock time",
 #endif
-        set_Lock_time_page_btn_cb,setting,base, LV_SYMBOL_SETTINGS, set_menu_btn_event_cb);
+        set_Lock_time_page_btn_cb,setting,base, LV_SYMBOL_SETTINGS, set_menu_btn_event_cb, set_item_handle);
 
 
     set_item_add(
@@ -600,7 +600,7 @@ void lv_set_page(lv_obj_t *base)
 #else
         "Page Read",
 #endif
-        set_Page_read_page_btn_cb,setting,base, LV_SYMBOL_VOLUME_MID, set_menu_btn_event_cb);
+        set_Page_read_page_btn_cb,setting,base, LV_SYMBOL_VOLUME_MID, set_menu_btn_event_cb, set_item_handle);
 
     set_item_add(
 #if USING_CHINESE
@@ -608,7 +608,7 @@ void lv_set_page(lv_obj_t *base)
 #else
         "Bg Color",
 #endif
-        color_set_gui,setting,base, LV_SYMBOL_SETTINGS, set_menu_btn_event_cb);
+        color_set_gui,setting,base, LV_SYMBOL_SETTINGS, set_menu_btn_event_cb, set_item_handle);
 
 
     set_item_add(
@@ -617,7 +617,7 @@ void lv_set_page(lv_obj_t *base)
 #else
         "About us",
 #endif
-        create_us,setting,base, LV_SYMBOL_BELL, set_menu_btn_event_cb);
+        create_us,setting,base, LV_SYMBOL_BELL, set_menu_btn_event_cb, set_item_handle);
 
     set_item_add(
 #if USING_CHINESE
@@ -625,7 +625,7 @@ void lv_set_page(lv_obj_t *base)
 #else
         "Power OFF",
 #endif
-        set_power_off,setting,base, LV_SYMBOL_POWER, set_menu_btn_event_cb);
+        set_power_off,setting,base, LV_SYMBOL_POWER, set_menu_btn_event_cb, set_item_handle);
 }
 
 

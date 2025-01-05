@@ -18,7 +18,7 @@ typedef struct set_item
 }set_item_t;
  
 esp_err_t set_item_add(char *name, page_handle_cb_t handle, lv_obj_t * setting, lv_obj_t *base, 
-                        char * item_log);
-page_handle_cb_t app_item_get_handler(lv_obj_t *obj);
-void app_item_free();
+                        char * item_log, void (*button_handle_cb)(lv_event_t * ), set_item_t *set_item_manage);
+page_handle_cb_t app_item_get_handler(lv_obj_t *obj, set_item_t *set_item_manage);
+void app_item_free(set_item_t *set_item_manage);
 #endif
